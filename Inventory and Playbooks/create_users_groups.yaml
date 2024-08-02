@@ -1,0 +1,15 @@
+- name: Manage users and groups
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Create a new group
+      group:
+        name: devops
+        state: present
+
+    - name: Create a new user
+      user:
+        name: john
+        password: "{{ 'password123' }}"
+        groups: devops
+        state: present

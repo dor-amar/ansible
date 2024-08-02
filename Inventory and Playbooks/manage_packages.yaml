@@ -1,0 +1,13 @@
+- name: Manage packages
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
+    - name: Remove a package
+      yum:
+        name: httpd-tools
+        state: absent
