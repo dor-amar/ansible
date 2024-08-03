@@ -1,0 +1,10 @@
+- name: Check Disk Space on Linux Servers
+  hosts: all
+  tasks:
+    - name: Disk Space Usage Report
+      shell: df -Th
+      register: result
+
+    - debug:
+        var: result.stdout_lines
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"

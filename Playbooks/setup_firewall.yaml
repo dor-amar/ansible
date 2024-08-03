@@ -1,0 +1,26 @@
+---
+- name: Set Up Basic Firewall Rules
+  hosts: all
+  become: yes
+  tasks:
+    - name: Allow SSH
+      firewalld:
+        service: ssh
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: Allow HTTP and HTTPS
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      loop:
+        - http
+        - https
+
+    - name: Reload firewall
+      firewalld:
+        state: reloaded
+        immediate: yes
