@@ -1,6 +1,6 @@
 ---
 - name: Manage Docker Containers
-  hosts: all
+  hosts: amazonlinux
   become: yes
   tasks:
     - name: Install Docker
@@ -23,6 +23,6 @@
       docker_container:
         name: nginx
         image: nginx
-        state: started
+        state: stopped
         ports:
           - "80:80"

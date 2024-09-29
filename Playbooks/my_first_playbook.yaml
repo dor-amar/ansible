@@ -1,0 +1,7 @@
+- hosts: allservers
+  tasks:
+  - name: Ensure apache is at the latest version
+    ansible.builtin.yum:
+      name: httpd
+      state: latest
+      become: true

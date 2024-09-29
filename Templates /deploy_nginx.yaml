@@ -1,0 +1,35 @@
+- name: Provision nginx web server
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install NGINX
+      apt:
+        name: nginx
+        state: present
+
+    - name: Create document root
+      file:
+        path: /var/www/{{ server_name }}
+        state: directory
+
+    - name: Deploy NGINX configuration
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/{{ server_name }}
+    
+    - name: Enable NGINX site
+      file:
+        src: /etc/nginx/sites-available/{{ server_name }}
+        dest: /etc/nginx/sites-enabled/{{ server_name }}
+        state: link
+
+    - name: Remove default NGINX site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Start NGINX
+      service:
+        name: nginx
+        state: started
+        enabled: yes

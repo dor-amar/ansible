@@ -1,5 +1,5 @@
 - name: Manage users and groups
-  hosts: webservers
+  hosts: allservers
   become: yes
   tasks:
     - name: Create a new group
@@ -9,7 +9,7 @@
 
     - name: Create a new user
       user:
-        name: john
+        name: ziv
         password: "{{ 'password123' }}"
         groups: devops
         state: present
