@@ -15,7 +15,7 @@
         dest: "/var/www/myapp"
 
     - name: Build the Docker image for the Python app
-      command: docker build -t myapp:latest ./automated-deplyoment/app 
+      command: docker build -t myapp:latest . 
       args:
         chdir: "/var/www/myapp"  # Where the Dockerfile is located
 
