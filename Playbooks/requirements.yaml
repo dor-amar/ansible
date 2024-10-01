@@ -1,0 +1,30 @@
+---
+- name: Deploy a Python application from Git
+  hosts: ubuntu
+  become: yes
+  tasks:
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install Python venv package
+      apt:
+        name: python3.12-venv  # Install the venv package
+        state: present
+
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/dor-amar/ansible.git'
+        dest: /opt/myapp
+
+    - name: Create a virtual environment
+      command: python3 -m venv /opt/myapp/automated-deployment/app/venv
+
+    - name: Install application dependencies in the virtual environment
+      command: /opt/myapp/automated-deployment/app/venv/bin/pip install -r /opt/myapp/automated-deployment/app/requirements.txt
+
+    - name: Install application dependencies
+      pip:
+        requirements: /opt/myapp/automated-deployment/app/requirements.txt
+

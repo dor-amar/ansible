@@ -7,4 +7,4 @@
 
     - debug:
         var: result.stdout_lines
-      when: ansible_os_family == "Debian" or ansible_os_family == "Amazon"
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"

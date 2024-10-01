@@ -1,0 +1,14 @@
+---
+- name: Install Reqs
+  hosts: ubuntu
+  become: yes
+  tasks: 
+    - name: Install Git
+      apt: 
+        name: git
+        state: present
+
+    - name: Clone
+      git: 
+        repo: 'https://github.com/dor-amar/ansible.git'
+        dest: /home/ubuntu/ansible

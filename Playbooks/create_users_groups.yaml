@@ -1,5 +1,5 @@
 - name: Manage users and groups
-  hosts: allservers
+  hosts: all
   become: yes
   tasks:
     - name: Create a new group
