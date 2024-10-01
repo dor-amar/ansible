@@ -17,7 +17,7 @@
     - name: Build the Docker image for the Python app
       command: docker build -t myapp:latest . 
       args:
-        chdir: "/var/www/myapp"  # Where the Dockerfile is located
+        chdir: "/var/www/myapp/automated-deployment/app"  # Where the Dockerfile is located
 
     - name: Stop and remove the existing container if it exists
       docker_container:
