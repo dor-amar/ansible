@@ -1,0 +1,37 @@
+---
+- name: Deploy Python Web Application Using Docker
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install Docker Compose (if required)
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Clone the application code from GitHub
+      git:
+        repo: "https://github.com/dor-amar/ansible.git"  # Replace with your repo URL if needed
+        dest: "/var/www/myapp"
+
+    - name: Copy the app folder contents (Dockerfile, app.py, requirements.txt) to the server
+      copy:
+        src: ./app/  # Copying the local app directory (from your structure)
+        dest: /var/www/myapp/  # Destination on the server
+
+    - name: Build the Docker image for the Python app
+      command: docker build -t myapp:latest .
+      args:
+        chdir: "/var/www/myapp"  # Where the Dockerfile is located (adjusted for your app folder)
+
+    - name: Run the Python app container
+      docker_container:
+        name: myapp_container
+        image: myapp:latest
+        state: started
+        ports:
+          - "5000:5000"  # Map port 5000 on the server to port 5000 inside the container
