@@ -24,7 +24,6 @@
         name: flask-app
         state: absent
         force_kill: yes
-        remove_volumes: yes
       ignore_errors: yes
 
     - name: Run the new Python app container
