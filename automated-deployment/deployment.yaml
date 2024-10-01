@@ -1,37 +1,37 @@
 ---
 - name: Deploy Python Web Application Using Docker
-  hosts: ubuntu
+  hosts: webservers
   become: yes
   tasks:
     - name: Install Docker
       apt:
         name: docker.io
         state: present
-
-    - name: Install Docker Compose (if required)
-      apt:
-        name: docker-compose
-        state: present
+        update_cache: yes
 
     - name: Clone the application code from GitHub
       git:
-        repo: "https://github.com/dor-amar/ansible.git"  # Replace with your repo URL if needed
+        repo: "https://github.com/dor-amar/ansible.git"  # Replace with your repo URL
         dest: "/var/www/myapp"
 
-    - name: Copy the app folder contents (Dockerfile, app.py, requirements.txt) to the server
-      copy:
-        src: ./app/  # Copying the local app directory (from your structure)
-        dest: /var/www/myapp/  # Destination on the server
-
     - name: Build the Docker image for the Python app
-      command: docker build -t myapp:latest .
+      command: docker build -t myapp:latest ./automated-deplyoment/app .
       args:
-        chdir: "/var/www/myapp"  # Where the Dockerfile is located (adjusted for your app folder)
+        chdir: "/var/www/myapp"  # Where the Dockerfile is located
 
-    - name: Run the Python app container
+    - name: Stop and remove the existing container if it exists
       docker_container:
-        name: myapp_container
+        name: flask-app
+        state: absent
+        force_kill: yes
+        remove_volumes: yes
+      ignore_errors: yes
+
+    - name: Run the new Python app container
+      docker_container:
+        name: flask-app
         image: myapp:latest
         state: started
         ports:
           - "5000:5000"  # Map port 5000 on the server to port 5000 inside the container
+        restart_policy: always
