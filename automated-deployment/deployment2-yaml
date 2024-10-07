@@ -1,0 +1,37 @@
+---
+- name: Deploy Python Web Application Using Docker
+  hosts: ubuntu
+  become: yes
+  tasks:
+    - name: Install Docker
+      shell: |
+        if ! [ -x "$(command -v docker)" ]; then
+          sudo apt update
+          sudo apt install -y docker.io
+        fi
+      args:
+        warn: false
+
+    - name: Clone the application code from GitHub
+      shell: |
+        if [ -d "/var/www/myapp" ]; then
+          cd /var/www/myapp && sudo git pull
+        else
+          sudo git clone https://github.com/dor-amar/ansible.git /var/www/myapp
+        fi
+
+    - name: Build the Docker image for the Python app
+      shell: docker build -t simple-flask-api:latest .
+      args:
+        chdir: "/var/www/myapp/automated-deployment/app"
+
+    - name: Stop and remove the existing container if it exists
+      shell: |
+        if sudo docker ps -a | grep simple-flask-api; then
+          sudo docker stop simple-flask-api
+          sudo docker rm simple-flask-api
+        fi
+      ignore_errors: yes
+
+    - name: Run the new Python app container
+      shell: sudo docker run -d --name simple-flask-api -p 5000:5000 --restart always simple-flask-api:latest

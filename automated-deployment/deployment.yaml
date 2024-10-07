@@ -15,21 +15,21 @@
         dest: "/var/www/myapp"
 
     - name: Build the Docker image for the Python app
-      command: docker build -t myapp:latest . 
+      command: sudo docker build -t simple-flask-api:latest . 
       args:
         chdir: "/var/www/myapp/automated-deployment/app"  # Where the Dockerfile is located
 
     - name: Stop and remove the existing container if it exists
       docker_container:
-        name: flask-app
+        name: simple-flask-api
         state: absent
         force_kill: yes
       ignore_errors: yes
 
     - name: Run the new Python app container
       docker_container:
-        name: flask-app
-        image: myapp:latest
+        name: simple-flask-api
+        image: simple-flask-api:latest
         state: started
         ports:
           - "5000:5000"  # Map port 5000 on the server to port 5000 inside the container
