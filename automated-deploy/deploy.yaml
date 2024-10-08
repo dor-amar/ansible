@@ -1,0 +1,48 @@
+---
+- name: Deployment 
+  hosts: ubuntu 
+  become: yes 
+  tasks: 
+    - name: Install Docker
+      apt: 
+        name: docker.io
+        state: present
+
+    - name: Install Git
+      apt: 
+        name: git
+        state: present 
+    
+    - name : Clone Repo 
+      git: 
+        repo: 'https://github.com/dor-amar/ansible.git'
+        dest: "/var/www/myapp"
+
+    - name : Build application 
+      command: sudo docker build -t flask-app .  
+      args:
+       chdir: "/var/www/myapp/automated-deploy"
+
+    - name : Run docker image 
+      docker_container:
+        name: flask-app
+        image: flask-app:latest
+        state: started
+        ports:
+          - 5000:5000
+        
+
+
+
+      
+
+
+
+
+
+
+# Build Docker image 
+
+# Stop and Remove 
+
+# Run Image 
