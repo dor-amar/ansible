@@ -1,0 +1,27 @@
+---
+- name: Install and configure Nginx
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copy website content
+      copy:
+        src: /mnt/c/Users/Dor/Desktop/Work/Teaching/Ansible/ansible/exercises/index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Ensure UFW allows Nginx HTTP
+      ufw:
+        rule: allow
+        name: 'Nginx Full'

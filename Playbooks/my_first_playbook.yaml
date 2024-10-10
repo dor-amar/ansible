@@ -1,7 +1,7 @@
-- hosts: allservers
+- hosts: all
   tasks:
   - name: Ensure apache is at the latest version
-    ansible.builtin.yum:
-      name: httpd
+    ansible.builtin.apt:
+      name: nginx
       state: latest
       become: true

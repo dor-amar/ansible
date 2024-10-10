@@ -18,6 +18,13 @@
         repo: 'https://github.com/dor-amar/ansible.git'
         dest: /opt/myapp
 
+    - name: command example
+      command: pwd 
+      register: result
+
+    - debug:
+        var: result.stdout_lines
+
     - name: Create a virtual environment
       command: python3 -m venv /opt/myapp/automated-deployment/app/venv
 
