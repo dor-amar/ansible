@@ -9,6 +9,10 @@ pipeline {
         // Using git commit hash as version tag
         VERSION = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
+    
+    triggers {
+        githubPush()
+    }
 
     parameters {
         choice(name: 'DEPLOY_ENV', choices: ['development', 'staging', 'production'], description: 'Deployment Environment')
