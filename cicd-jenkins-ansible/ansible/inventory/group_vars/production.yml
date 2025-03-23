@@ -2,7 +2,5 @@
 app_name: "my-app"
 app_environment: "production"
 docker_image: "my-app:{{ version }}"
-container_memory: "2g"
-container_cpu: "2.0"
 health_check_url: "http://localhost:80/health"
 enable_debug: false 
