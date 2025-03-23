@@ -1,0 +1,8 @@
+---
+app_name: "my-app"
+app_environment: "staging"
+docker_image: "my-app:{{ version }}"
+container_memory: "1g"
+container_cpu: "1.0"
+health_check_url: "http://localhost:8080/health"
+enable_debug: true 

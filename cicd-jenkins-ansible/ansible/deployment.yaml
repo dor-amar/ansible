@@ -1,0 +1,28 @@
+---
+- name: Deploy Application
+  hosts: "{{ env }}"
+  become: true
+  vars:
+    docker_image: "{{ docker_registry }}/{{ docker_image }}:{{ version }}"
+
+  tasks:
+    - name: Pull Docker image
+      docker_image:
+        name: "{{ docker_image }}"
+        source: pull
+        force_source: yes
+
+    - name: Stop existing container
+      docker_container:
+        name: "{{ app_name }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Run Docker container
+      docker_container:
+        name: "{{ app_name }}"
+        image: "{{ docker_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ host_port }}:{{ container_port }}"

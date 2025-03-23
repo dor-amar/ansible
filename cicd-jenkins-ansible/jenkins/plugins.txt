@@ -1,0 +1,9 @@
+ansible
+git
+pipeline-model-definition
+workflow-aggregator
+credentials-binding
+ssh-credentials
+github
+docker-workflow
+blueocean 
