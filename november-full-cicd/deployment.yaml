@@ -1,0 +1,49 @@
+---
+- name: Deploy Docker Container (Ansible Modules)
+  hosts: production
+  become: true
+  vars:
+    container_name: "full-cicd-example"
+    image_name: "doramar97/full-cicd-example:latest"
+    container_port: 5000
+    host_port: 5000
+
+  tasks:
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Check if container exists
+      docker_container_info:
+        name: "{{ container_name }}"
+      register: container_status
+
+    - name: Stop existing container
+      docker_container:
+        name: "{{ container_name }}"
+        state: stopped
+      when: container_status.exists
+
+    - name: Remove existing container
+      docker_container:
+        name: "{{ container_name }}"
+        state: absent
+      when: container_status.exists
+
+    - name: Pull Docker image
+      docker_image:
+        name: "{{ image_name }}"
+        source: pull
+        force_source: yes
+
+    - name: Run Docker container
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ host_port }}:{{ container_port }}" 
