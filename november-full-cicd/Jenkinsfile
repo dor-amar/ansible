@@ -19,7 +19,7 @@ pipeline {
         steps {
             script {
                 dir('november-full-cicd') {
-                    sh "docker build -t doramar97/full-cicd-example:latest ."
+                    sh "docker build -t doramar97/full-cicd-example:${env.BUILD_NUMBER} ."
                 }
 
             }
@@ -38,7 +38,7 @@ pipeline {
     stage('Push Docker Image') {
         steps {
             script {
-                sh "docker push doramar97/full-cicd-example:latest"
+                sh "docker push doramar97/full-cicd-example:${env.BUILD_NUMBER}"
             }
         }
     }
