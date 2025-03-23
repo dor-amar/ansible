@@ -2,14 +2,11 @@ pipeline {
     agent any
 
     environment {
-        // Update these variables according to your setup
         DOCKER_REGISTRY = 'doramar97'
         DOCKER_IMAGE = 'my-app-nov'
         DOCKER_CREDENTIALS = 'docker-registry-credentials'
-        // Using git commit hash as version tag
-        VERSION = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
-    
+
     triggers {
         githubPush()
     }
@@ -19,11 +16,19 @@ pipeline {
     }
 
     stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    // Set VERSION variable inside a script block
+                    VERSION = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 dir('cicd-jenkins-ansible') {
-                script {
-                    // Build the Docker image
+                    script {
                         docker.build("${DOCKER_IMAGE}:${VERSION}", "-f Dockerfile .")
                     }
                 }
@@ -33,10 +38,8 @@ pipeline {
         stage('Push to Registry') {
             steps {
                 script {
-                    // Login to Docker registry and push the image
                     docker.withRegistry("https://${DOCKER_REGISTRY}", DOCKER_CREDENTIALS) {
                         docker.image("${DOCKER_IMAGE}:${VERSION}").push()
-                        // Also tag as latest
                         docker.image("${DOCKER_IMAGE}:${VERSION}").push('latest')
                     }
                 }
@@ -46,13 +49,15 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 dir('cicd-jenkins-ansible') {
-                // Run Ansible playbook for deployment
-                ansiblePlaybook(
-                    playbook: 'ansible/deployment.yaml',
-                    inventory: 'ansible/inventory/hosts.yml',
-                    extras: "-e env=${params.DEPLOY_ENV} -e version=${VERSION}",
-                    colorized: true
-                )
+                    script {
+                        ansiblePlaybook(
+                            playbook: 'ansible/deployment.yaml',
+                            inventory: 'ansible/inventory/hosts.yml',
+                            extras: "-e env=${params.DEPLOY_ENV} -e version=${VERSION}",
+                            colorized: true
+                        )
+                    }
+                }
             }
         }
     }
@@ -65,9 +70,9 @@ pipeline {
             echo "Deployment failed! Check logs for details."
         }
         always {
-            // Clean up local Docker images
-            sh "docker rmi ${DOCKER_IMAGE}:${VERSION} || true"
+            script {
+                sh "docker rmi ${DOCKER_IMAGE}:${VERSION} || true"
+            }
         }
-      }
-  }
+    }
 }
