@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Update these variables according to your setup
-        DOCKER_REGISTRY = 'registry.example.com'
+        DOCKER_REGISTRY = 'doramar97'
         DOCKER_IMAGE = 'my-app-nov'
         DOCKER_CREDENTIALS = 'docker-registry-credentials'
         // Using git commit hash as version tag
