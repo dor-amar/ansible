@@ -68,5 +68,6 @@ pipeline {
             // Clean up local Docker images
             sh "docker rmi ${DOCKER_IMAGE}:${VERSION} || true"
         }
-    }
+      }
+  }
 }
