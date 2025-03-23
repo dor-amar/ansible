@@ -1,0 +1,9 @@
+---
+# Development environment variables
+container_name: "dev-app"
+image_name: "dev-registry.example.com/my-app:dev"
+container_port: 80
+host_port: 8080
+docker_memory_limit: "512m"
+docker_cpu_limit: "0.5"
+enable_debug: true 

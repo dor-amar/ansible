@@ -1,0 +1,9 @@
+---
+# Staging environment variables
+container_name: "stage-app"
+image_name: "stage-registry.example.com/my-app:stage"
+container_port: 80
+host_port: 8080
+docker_memory_limit: "1g"
+docker_cpu_limit: "1.0"
+enable_debug: true 

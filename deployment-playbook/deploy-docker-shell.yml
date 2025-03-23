@@ -1,0 +1,58 @@
+---
+- name: Deploy Docker Container (Shell Commands)
+  hosts: production
+  become: true
+  vars:
+    container_name: "my-app"
+    image_name: "nginx:latest"
+    container_port: 80
+    host_port: 8080
+
+  tasks:
+    - name: Install Docker using shell
+      shell: |
+        apt-get update
+        apt-get install -y docker.io python3-docker
+      args:
+        executable: /bin/bash
+
+    - name: Start Docker service
+      shell: systemctl start docker && systemctl enable docker
+      args:
+        executable: /bin/bash
+
+    - name: Check if container exists
+      shell: docker ps -a | grep {{ container_name }} || true
+      register: container_exists
+      args:
+        executable: /bin/bash
+
+    - name: Stop and remove existing container
+      shell: |
+        if docker ps -a | grep {{ container_name }}; then
+          docker stop {{ container_name }}
+          docker rm {{ container_name }}
+        fi
+      args:
+        executable: /bin/bash
+      when: container_exists.stdout != ""
+
+    - name: Pull latest Docker image
+      shell: docker pull {{ image_name }}
+      args:
+        executable: /bin/bash
+
+    - name: Run Docker container
+      shell: |
+        docker run -d \
+          --name {{ container_name }} \
+          -p {{ host_port }}:{{ container_port }} \
+          --restart always \
+          {{ image_name }}
+      args:
+        executable: /bin/bash
+
+    - name: Verify container is running
+      shell: docker ps | grep {{ container_name }}
+      args:
+        executable: /bin/bash 

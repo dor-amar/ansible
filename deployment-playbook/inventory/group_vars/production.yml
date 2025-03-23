@@ -1,0 +1,10 @@
+---
+# Production environment variables
+container_name: "prod-app"
+image_name: "prod-registry.example.com/my-app:latest"
+container_port: 80
+host_port: 80
+docker_memory_limit: "2g"
+docker_cpu_limit: "2.0"
+enable_debug: false
+high_availability: true 
