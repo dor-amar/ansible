@@ -44,16 +44,16 @@ pipeline {
     }
 
 
-
-    // stage('Deployment') {
-    //     steps {
-    //         script {
-    //             sh """
-    //             docker run -d -p 80:80 doramar97/my-app-nov:latest
-    //             """
-    //         }
-    //     }
-    // }
+    stage('Deployment') {
+        steps {
+            script {
+                dir('november-full-cicd')
+                sh """
+                ansible-playbook -i inventory.ini deployment.yaml
+                """
+            }
+        }
+    }
   }
 }
 
