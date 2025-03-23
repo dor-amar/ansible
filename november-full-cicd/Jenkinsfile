@@ -47,10 +47,12 @@ pipeline {
     stage('Deployment') {
         steps {
             script {
-                dir('november-full-cicd')
-                sh """
-                ansible-playbook -i inventory.ini deployment.yaml
-                """
+                dir('november-full-cicd') {
+                    sh """
+                    ansible-playbook -i inventory.ini deployment.yaml
+                    """
+                }
+
             }
         }
     }
